@@ -5,7 +5,7 @@
  *      
  *  As part of the project for internship at Sygest S.R.L, Parma Italy.
  *  Company's  tutor:  Stefano Maestri.  
- *  Accademic Tutor: Federico Bergenti
+ *  Academic Tutor: Federico Bergenti
  *  
  * 
  */
@@ -36,6 +36,7 @@ namespace DicomXml
             settings.Indent = true;
             settings.NewLineOnAttributes = true;
             settings.Encoding = Encoding.Unicode;
+
             XmlTextWriter xmlWriter = new XmlTextWriter(filename, Encoding.Unicode);
 
             xmlWriter.Formatting = Formatting.Indented;
@@ -71,10 +72,10 @@ namespace DicomXml
             {
                 serializer.Serialize(xmlWriter, xml);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                System.Windows.Forms.MessageBox.Show("Error: " + ex.Message);
             }
 
             xmlWriter.Close();
