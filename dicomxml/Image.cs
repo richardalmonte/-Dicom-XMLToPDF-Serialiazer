@@ -5,7 +5,7 @@
  *      
  *  As part of the project for internship at Sygest S.R.L, Parma Italy.
  *  Company's  tutor:  Stefano Maestri.  
- *  Accademic Tutor: Federico Bergenti
+ *  Academic Tutor: Federico Bergenti
  *  
  * 
  */
@@ -211,17 +211,25 @@ namespace DicomXml
 
         public void SaveImage(String fileName)
         {
-            if (bmp != null)
+            try
             {
-                ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
-                System.Drawing.Imaging.Encoder myEncoder = System.Drawing.Imaging.Encoder.Quality;
+                if (bmp != null)
+                {
+                    ImageCodecInfo jpgEncoder = GetEncoder(ImageFormat.Jpeg);
+                    System.Drawing.Imaging.Encoder myEncoder = System.Drawing.Imaging.Encoder.Quality;
 
-                EncoderParameters myEncoderParameters = new EncoderParameters(1);
-                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);
-                myEncoderParameters.Param[0] = myEncoderParameter;
+                    EncoderParameters myEncoderParameters = new EncoderParameters(1);
+                    EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 50L);
+                    myEncoderParameters.Param[0] = myEncoderParameter;
 
-                bmp.Save(fileName,jpgEncoder,myEncoderParameters /*ImageFormat.Png*/);
+                    bmp.Save(fileName, jpgEncoder, myEncoderParameters /*ImageFormat.Png*/);
+                }
             }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Error = " + ex.Message);
+            }
+            
         }
 
         public string toBase64String(Bitmap image)

@@ -5,7 +5,7 @@
  *      
  *  As part of the project for internship at Sygest S.R.L, Parma Italy.
  *  Company's  tutor:  Stefano Maestri.  
- *  Accademic Tutor: Federico Bergenti
+ *  Academic Tutor: Federico Bergenti
  *  
  * 
  */
@@ -28,7 +28,7 @@ using Dicom.Imaging.Mathematics;
 using Dicom.Imaging.Render;
 using Dicom.Media;
 using Dicom;
-using CharLS;
+//using CharLS;
 
 namespace DicomXml
 {

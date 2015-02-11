@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DicomXml")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Dicom Xml Serialiazer")]
+[assembly: AssemblyDescription("Serialize DICOM files as an XML")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ram Systems")]
 [assembly: AssemblyProduct("DicomXml")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCopyright("Copyright © Richard Almonte  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
