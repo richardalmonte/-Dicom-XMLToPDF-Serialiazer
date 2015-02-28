@@ -30,6 +30,10 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>true</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -88,21 +92,23 @@
     <Compile Include="DicomDataElement.cs" />
     <Compile Include="DicomDecoder.cs" />
     <Compile Include="DicomDictionary.cs" />
+    <Compile Include="DicomImage.cs" />
     <Compile Include="DicomObject.cs" />
     <Compile Include="DicomReader.cs" />
+    <Compile Include="FileEncode.cs" />
     <Compile Include="Image.cs" />
-    <Compile Include="mainFrm.cs">
+    <Compile Include="MainFrm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="mainFrm.designer.cs">
-      <DependentUpon>mainFrm.cs</DependentUpon>
+    <Compile Include="MainFrm.designer.cs">
+      <DependentUpon>MainFrm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="writeToXml.cs" />
+    <Compile Include="WriteToXml.cs" />
     <Compile Include="_XMLSchema.cs" />
-    <EmbeddedResource Include="mainFrm.resx">
-      <DependentUpon>mainFrm.cs</DependentUpon>
+    <EmbeddedResource Include="MainFrm.resx">
+      <DependentUpon>MainFrm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -141,6 +147,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DicomResults\Images\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

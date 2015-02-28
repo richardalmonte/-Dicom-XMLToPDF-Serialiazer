@@ -18,11 +18,11 @@ using System.Configuration;
 
 namespace DicomXml
 {
-    class writeToXml
+   public class WriteToXml
     {
-        private string filename;
+        private readonly string filename;
 
-        public writeToXml()
+        public WriteToXml()
         {
             filename = ConfigurationManager.AppSettings["xmlPath"];
         }
@@ -36,10 +36,12 @@ namespace DicomXml
             settings.Indent = true;
             settings.NewLineOnAttributes = true;
             settings.Encoding = Encoding.Unicode;
+            
 
             XmlTextWriter xmlWriter = new XmlTextWriter(filename, Encoding.Unicode);
 
             xmlWriter.Formatting = Formatting.Indented;
+            
             myDicomObject xml = new myDicomObject();
             DicomObjectElement de = new DicomObjectElement();
             DicomObjectImage img = new DicomObjectImage();
@@ -50,13 +52,13 @@ namespace DicomXml
             foreach (DicomDataElement element in dicom)
             {
                 de = new DicomObjectElement();
-                de.tag = element.elementTag;
-                de.vr = element.elementVR;
-                de.description = element.tagDescription;
-                de.length = element.length;
-                de.value = element.elementValue;
+                de.tag = element.ElementTag;
+                de.vr = element.ElementVR;
+                de.description = element.TagDescription;
+                de.length = element.Length;
+                de.value = element.ElementValue;
                 i = 0;
-                foreach (var image in element.frameValue)
+                foreach (var image in element.FrameValue)
                 {
                     img = new DicomObjectImage();
                     img.Frame = i;
@@ -70,6 +72,7 @@ namespace DicomXml
             XmlSerializer serializer = new XmlSerializer(typeof(myDicomObject));//, "DicomObject");
             try
             {
+                
                 serializer.Serialize(xmlWriter, xml);
             }
             catch (Exception ex)

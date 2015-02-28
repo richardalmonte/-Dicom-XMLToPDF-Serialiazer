@@ -17,162 +17,162 @@ using System.Text;
 
 namespace DicomXml
 {
-    class DicomDataElement
+    public class DicomDataElement
     {
 
-        public string elementTag { get; set; }        
-        public string elementVR { get; set; }
-        public string tagDescription { get; set; }
-        public long length { get; set; }        
-        public string elementValue { get; set; }
-        public List<string> frameValue { get; set; }
+        public string ElementTag { get; set; }        
+        public string ElementVR { get; set; }
+        public string TagDescription { get; set; }
+        public long Length { get; set; }        
+        public string ElementValue { get; set; }
+        public List<string> FrameValue { get; set; }
 
         /// <summary>
         /// Constructor.
         /// </summary>
         public DicomDataElement()
         {
-            elementTag = string.Empty;
-            tagDescription = string.Empty;
-            elementVR = string.Empty;
-            elementValue = string.Empty;
-            frameValue = new List<string>();
-            length = 0;
+            ElementTag = string.Empty;
+            TagDescription = string.Empty;
+            ElementVR = string.Empty;
+            ElementValue = string.Empty;
+            FrameValue = new List<string>();
+            Length = 0;
             
         }
-        public void dispose()
+        public void Dispose()
         {
-            elementTag = string.Empty;
-            elementVR = string.Empty;
-            elementValue = string.Empty;
-            frameValue.Clear();
-            frameValue = null;
-            length = 0;
+            ElementTag = string.Empty;
+            ElementVR = string.Empty;
+            ElementValue = string.Empty;
+            FrameValue.Clear();
+            FrameValue = null;
+            Length = 0;
         }
 
         /// <summary>
         /// Sets the element values.
         /// </summary>
         /// <param name="value">Byte array with the Element Value field</param>
-        public void setValue(byte[] value)
+        public void SetValue(byte[] value)
         {
             byte[] notToUse = { 0x01, 0x00 };
             byte[] notToUseRev = {0x00,0x01};
             string stringValue = ASCIIEncoding.ASCII.GetString(value);
-            bool AT = false; // elementVR "Attribute Tag used for the parsing of tag "0028,0009".
-            switch (elementTag)
+            bool at = false; // ElementVR "Attribute Tag used for the parsing of tag "0028,0009".
+            switch (ElementTag)
             {
                 case "00181063":
-                    DicomDecoder._frameTime = Convert.ToDouble(stringValue, new CultureInfo("en-US"));
+                    DicomDecoder._FrameTime = Convert.ToDouble(stringValue, new CultureInfo("en-US"));
                     break;
                 case "00280002":
-                    DicomObject.pixelSample = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomObject.PixelSample = BitConverter.ToInt16(value, 0);
+                    DicomReader.IsInt = true;
                     break;
                 case "00280004":
-                    DicomObject.photoInterpretation = ASCIIEncoding.UTF8.GetString(value).TrimEnd(' ');
-                    DicomReader.isInt = false;
+                    DicomObject.PhotoInterpretation = ASCIIEncoding.UTF8.GetString(value).TrimEnd(' ');
+                    DicomReader.IsInt = false;
                     break;
                 case "00280005":
                 case "00280200":
-                    DicomReader.isInt = true;
+                    DicomReader.IsInt = true;
                     break;
                 case "00280010":
-                    DicomObject.pixelRows = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomObject.PixelRows = BitConverter.ToInt16(value, 0);
+                    DicomReader.IsInt = true;
                     break;
                 case "60000010":
                     DicomObject.OverlayRows = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomReader.IsInt = true;
                     break;
                 case "00280011":
-                    DicomObject.pixelColumns = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomObject.PixelColumns = BitConverter.ToInt16(value, 0);
+                    DicomReader.IsInt = true;
                     break;
                 case "60000011":
                     DicomObject.OverlayColumns = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomReader.IsInt = true;
                     break;
                 case "00280100":
-                    DicomObject.bitsAllocated = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomObject.BitsAllocated = BitConverter.ToInt16(value, 0);
+                    DicomReader.IsInt = true;
                     break;
                 case "60000100":
                     DicomObject.OverlayBitsAllocated = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomReader.IsInt = true;
                     break;
                 case "00280101":
-                    DicomObject.bitStored = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomObject.BitStored = BitConverter.ToInt16(value, 0);
+                    DicomReader.IsInt = true;
                     break;
                 case "00280102":
-                    DicomObject.highBit = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomObject.HighBit = BitConverter.ToInt16(value, 0);
+                    DicomReader.IsInt = true;
                     break;
                 case "00280103":
-                    DicomObject.pixelRepresentation = BitConverter.ToInt16(value, 0);
-                    DicomReader.isInt = true;
+                    DicomObject.PixelRepresentation = BitConverter.ToInt16(value, 0);
+                    DicomReader.IsInt = true;
                     break;
                 case "00281050":
                     try
                     {
-                        DicomObject.windowCentre = Convert.ToDouble(stringValue, new CultureInfo("en-US")); 
+                        DicomObject.WindowCentre = Convert.ToDouble(stringValue, new CultureInfo("en-US")); 
                     }
                     catch (FormatException)
                     {
                         char[] split = { ' ', '\'','\\' };
                         string[] stVal = stringValue.Trim(' ').Split(split);
-                        DicomObject.windowCentre = Convert.ToDouble(stVal[0], new CultureInfo("en-US"));
+                        DicomObject.WindowCentre = Convert.ToDouble(stVal[0], new CultureInfo("en-US"));
                     }
                                       
                     break;
                 case "00281051":
                     try
                     {
-                        DicomObject.windowWidth = Convert.ToDouble(stringValue, new CultureInfo("en-US"));   
+                        DicomObject.WindowWidth = Convert.ToDouble(stringValue, new CultureInfo("en-US"));   
                     }
                     catch (FormatException)
                     {
 
                         char[] split = { ' ', '\'', '\\' };
                         string[] stVal = stringValue.Trim(' ').Split(split);
-                        DicomObject.windowWidth = Convert.ToDouble(stVal[0], new CultureInfo("en-US"));
+                        DicomObject.WindowWidth = Convert.ToDouble(stVal[0], new CultureInfo("en-US"));
                     }
                                      
                     break;
                 case "00281052":
-                    DicomObject.rescaleIntercept = Convert.ToDouble(stringValue, new CultureInfo("en-US"));
+                    DicomObject.RescaleIntercept = Convert.ToDouble(stringValue, new CultureInfo("en-US"));
                     break;
                 case "00281053":
-                    DicomObject.rescaleSlope = Convert.ToDouble(stringValue, new CultureInfo("en-US"));
+                    DicomObject.RescaleSlope = Convert.ToDouble(stringValue, new CultureInfo("en-US"));
                     break;
                 
                     
                 case "00200013":
-                    DicomObject.imgNumber = Convert.ToInt32(DicomReader.getString(value,false));
-                    //DicomReader.isInt = true;
+                    DicomObject.ImgNumber = Convert.ToInt32(DicomReader.GetString(value,false));
+                    //DicomReader.IsInt = true;
                     break;
                 case "00020010":
                     if (value[value.Length - 1] == 0x00)
                         Array.Resize<byte>(ref value, value.Length - 1);
-                    DicomObject.transferSyntax = ASCIIEncoding.UTF8.GetString(value);
-                    switch (DicomObject.transferSyntax)
+                    DicomObject.TransferSyntax = ASCIIEncoding.UTF8.GetString(value);
+                    switch (DicomObject.TransferSyntax)
                     {
                         case "1.2.840.10008.1.2":
-                            DicomDecoder.encode = FileEncode.implicitVR;
+                            DicomDecoder.Encode = FileEncode.ImplicitVR;
                             break;
                         case "1.2.840.10008.1.2.1":
-                            DicomDecoder.encode = FileEncode.explicitLittle;
+                            DicomDecoder.Encode = FileEncode.ExplicitLittle;
                             break;
                         case "1.2.840.10008.1.2.2":
-                            DicomDecoder.encode = FileEncode.explicitBig;
-                            DicomReader.isLittleEndian = false;
+                            DicomDecoder.Encode = FileEncode.ExplicitBig;
+                            DicomReader.IsLittleEndian = false;
                             break;
                         case "1.2.840.10008.1.2.4.70":
                         case"1.2.840.10008.1.2.4.80":
                         case "1.2.840.10008.1.2.4.91":
-                            DicomDecoder.encode = FileEncode.jpeg;
-                            DicomReader.isLittleEndian = false;
+                            DicomDecoder.Encode = FileEncode.jpeg;
+                            DicomReader.IsLittleEndian = false;
                             break;
                             //1.2.840.10008.1.2.2.4.70
                         default:
@@ -180,124 +180,124 @@ namespace DicomXml
                     }
                     break;
                 case "00280008": // Number of Frames
-                    DicomObject.numOfFrames = Convert.ToInt32(ASCIIEncoding.ASCII.GetString(value));
+                    DicomObject.NumOfFrames = Convert.ToInt32(ASCIIEncoding.ASCII.GetString(value));
                     break;
                 case "00280009": // Frame Increment Pointer
-                    DicomReader.isTag = true;
-                    AT = true;
+                    DicomReader.IsTag = true;
+                    at = true;
                     break;
                 // Palette Color Lookup Table Descriptor                
                 case "00281101": 
-                    DicomReader.isLut = true;
-                    DicomObject.RedPaletteLookupTable = DicomReader.getLutValue(value);
+                    DicomReader.IsLut = true;
+                    DicomObject.RedPaletteLookupTable = DicomReader.GetLutValue(value);
                     break;
                 //Green Palette Color Lookup Table Descriptor
                 case "00281102":                     
-                    DicomReader.isLut = true;
-                    DicomObject.GreenPaletteLookupTable = DicomReader.getLutValue(value);
+                    DicomReader.IsLut = true;
+                    DicomObject.GreenPaletteLookupTable = DicomReader.GetLutValue(value);
                     break;
                 //Blue Palette Color Lookup Table Descriptor
                 case "00281103":                   
-                    DicomReader.isLut = true;
-                    DicomObject.BluePaletteLookupTable = DicomReader.getLutValue(value);
+                    DicomReader.IsLut = true;
+                    DicomObject.BluePaletteLookupTable = DicomReader.GetLutValue(value);
                     break;
                 case "00281201": //red palette
-                    DicomReader.reds = DicomReader.getLut(value);
-                    DicomReader.isPalette = true;
+                    DicomReader.Reds = DicomReader.GetLut(value);
+                    DicomReader.IsPalette = true;
                     break;
                 case "00281202": // green palette
-                    DicomReader.greens = DicomReader.getLut(value);
-                    DicomReader.isPalette = true;
+                    DicomReader.Greens = DicomReader.GetLut(value);
+                    DicomReader.IsPalette = true;
                     break;
                 case "00281203": // blue palette
-                    DicomReader.blues = DicomReader.getLut(value);
-                    DicomReader.isPalette = true;
+                    DicomReader.Blues = DicomReader.GetLut(value);
+                    DicomReader.IsPalette = true;
                     break; 
                 case "60003000":
                     //Array.Resize<byte>(ref value, value.Length - 1);
-                    //DicomDecoder.imageFound = true;
-                    if (DicomDecoder.inSequence)
+                    //DicomDecoder.ImageFound = true;
+                    if (DicomDecoder.InSequence)
                     {
-                        DicomDecoder.isImage = false;
+                        DicomDecoder.IsImage = false;
                     }
                     else
                     {
-                        DicomDecoder.isImage = false;
-                        DicomDecoder.imageType = ImageType.Overlay;
+                        DicomDecoder.IsImage = false;
+                        DicomDecoder.ImageType = ImageType.Overlay;
                     }
                         
                     Array.Resize<byte>(ref value, 1);
                     value[0] = 0x00;
                     break;
                 case "7FE00010":
-                    DicomDecoder.imageFound = true;
-                    if(DicomDecoder.encode == FileEncode.jpeg)
+                    DicomDecoder.ImageFound = true;
+                    if(DicomDecoder.Encode == FileEncode.jpeg)
                     {
-                        DicomDecoder.isImage = true;
-                        DicomDecoder.inSequence = false;
+                        DicomDecoder.IsImage = true;
+                        DicomDecoder.InSequence = false;
                     }
-                    else if (DicomDecoder.inSequence)
+                    else if (DicomDecoder.InSequence)
                     {
-                        DicomDecoder.isImage = false;
-                        //DicomDecoder.isOW = true;
+                        DicomDecoder.IsImage = false;
+                        //DicomDecoder.IsOW = true;
                     }
                     else
-                        DicomDecoder.isImage = true;
-                    if (elementVR == "OW")
-                        DicomReader.isBigEndian = true;
+                        DicomDecoder.IsImage = true;
+                    if (ElementVR == "OW")
+                        DicomReader.IsBigEndian = true;
                     Array.Resize<byte>(ref value, 1);
                     value[0] = 0x00; 
                     break;
                 case "FFFEE000":
                     if (value.Length < 1)
-                        DicomDecoder.inSequence = true;
+                        DicomDecoder.InSequence = true;
                     else
                     {
-                       // DicomDecoder.inSequence = false;
-                        if (DicomDecoder.imageFound)
+                       // DicomDecoder.InSequence = false;
+                        if (DicomDecoder.ImageFound)
                         {
-                            DicomDecoder.isImage = true;
-                            DicomDecoder.imageType = ImageType.OriginalImage;
+                            DicomDecoder.IsImage = true;
+                            DicomDecoder.ImageType = ImageType.OriginalImage;
                         }
                     }
                     break;
                 case "FFFEE0DD":
                     UTF8Encoding enco = new UTF8Encoding();
                     value = enco.GetBytes("(End of Sequence Data)");
-                    DicomDecoder.inSequence = false;
+                    DicomDecoder.InSequence = false;
                     break;
                 default:
 
                     break;
             }
-            if (value.SequenceEqual<byte>(notToUse) && !DicomReader.isInt || value.SequenceEqual<byte>(notToUseRev) && !DicomReader.isInt)
-                elementValue = "0";
-            else if (elementTag.Substring(4, 4) == "0000")
+            if (value.SequenceEqual<byte>(notToUse) && !DicomReader.IsInt || value.SequenceEqual<byte>(notToUseRev) && !DicomReader.IsInt)
+                ElementValue = "0";
+            else if (ElementTag.Substring(4, 4) == "0000")
             {
-                DicomReader.isInt = true;
-                elementValue = DicomReader.getString(value, false);
+                DicomReader.IsInt = true;
+                ElementValue = DicomReader.GetString(value, false);
             }
-            else if (DicomDecoder.inSequence && DicomDecoder.imageFound == false)
+            else if (DicomDecoder.InSequence && DicomDecoder.ImageFound == false)
             {
-                elementValue = "(Sequence Data)";
-                DicomDecoder.inSequence = false;
-                DicomReader.startPosition = DicomReader.startPosition - length;
+                ElementValue = "(Sequence Data)";
+                DicomDecoder.InSequence = false;
+                DicomReader.StartPosition = DicomReader.StartPosition - Length;
             }
-            else if (DicomDecoder.isImage)
+            else if (DicomDecoder.IsImage)
             {
-                elementValue = "0";
-                DicomReader.startPosition = DicomReader.startPosition - length;
+                ElementValue = "0";
+                DicomReader.StartPosition = DicomReader.StartPosition - Length;
             }
-            else if (DicomReader.isPalette)
+            else if (DicomReader.IsPalette)
             {
-                DicomReader.isPalette = false;
-                elementValue = "0";
-            }else if (elementVR== "FD")
+                DicomReader.IsPalette = false;
+                ElementValue = "0";
+            }else if (ElementVR== "FD")
             {
-                elementValue = DicomReader.getString(value, elementVR);
+                ElementValue = DicomReader.GetString(value, ElementVR);
             }
             else
-                elementValue = DicomReader.getString(value, DicomReader.isTag, AT);
+                ElementValue = DicomReader.GetString(value, DicomReader.IsTag, at);
 
         }
     }
