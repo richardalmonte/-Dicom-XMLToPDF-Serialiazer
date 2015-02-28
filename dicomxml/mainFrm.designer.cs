@@ -1,6 +1,6 @@
 ﻿namespace DicomXml
 {
-    partial class mainFrm
+    partial class MainFrm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainFrm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainFrm));
             this.lblPath = new System.Windows.Forms.Label();
             this.txtPath = new System.Windows.Forms.TextBox();
             this.cmdOpen = new System.Windows.Forms.Button();
@@ -63,8 +63,8 @@
             resources.ApplyResources(this.cmdOpen, "cmdOpen");
             this.cmdOpen.Name = "cmdOpen";
             this.cmdOpen.UseVisualStyleBackColor = true;
-            this.cmdOpen.Click += new System.EventHandler(this.cmdOpen_Click);
-            this.cmdOpen.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmdOpen_MouseClick);
+            this.cmdOpen.Click += new System.EventHandler(this.CmdOpen_Click);
+            this.cmdOpen.MouseClick += new System.Windows.Forms.MouseEventHandler(this.CmdOpen_MouseClick);
             // 
             // pictureBox1
             // 
@@ -121,7 +121,7 @@
             // 
             // timer1
             // 
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
             // 
             // mainFrm
             // 
@@ -134,7 +134,7 @@
             this.Controls.Add(this.lblPath);
             this.MaximizeBox = false;
             this.Name = "mainFrm";
-            this.Load += new System.EventHandler(this.mainFrm_Load);
+            this.Load += new System.EventHandler(this.MainFrm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);

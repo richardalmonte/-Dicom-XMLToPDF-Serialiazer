@@ -28,21 +28,21 @@ namespace DicomXml
         private string[] elementTag;
         private string[] elementVR;
         private string[] elementDescription;
-        public static Dictionary<string, string> myDictionary;
-        public static Dictionary<string, string> myImplicitDictionary;
+        public static Dictionary<string, string> MyDictionary;
+        public static Dictionary<string, string> MyImplicitDictionary;
 
         /// <summary>
         /// Get the entries of the Dictionary element reading line by line.
         /// </summary>
         /// <param name="path"> get the Dicom Dictionary file path</param>
-        private void getEntry(string path)
+        private void GetEntry(string path)
         {
             string[] lines;
             lines = File.ReadAllLines(path);
 
             string[] readed = new string[5];
             int i = 0;
-            //initialize the arrays to a new array with dimensions of file length.
+            //initialize the arrays to a new array with dimensions of file Length.
             elementTag = new string[lines.Length];
             elementDescription = new string[lines.Length];
             elementVR = new string[lines.Length];
@@ -50,7 +50,7 @@ namespace DicomXml
             foreach (string line in lines)
             {
 
-                readed = parser(line);
+                readed = Parser(line);
                 // readed may be null if the read line is not a Dicom Element.
                 if (readed != null)
                 {
@@ -75,7 +75,7 @@ namespace DicomXml
         /// </summary>
         /// <param name="toParse">get the string to be parsed</param>
         /// <returns>Returns the string without unnecessary characters</returns>
-        private string[] parser(string toParse)
+        private string[] Parser(string toParse)
         {
 
             if (!toParse.StartsWith("#"))
@@ -104,22 +104,22 @@ namespace DicomXml
         /// <summary>
         /// Create the dictionary element and populate it. 
         /// </summary>
-        public void createDicomDictionary()
+        public void CreateDicomDictionary()
         {
             try
             {
-				string path = ConfigurationManager.AppSettings["DictionaryPath"];
+                string path = ConfigurationManager.AppSettings["DictionaryPath"];
 
-                getEntry(path/*ConfigurationManager.AppSettings["DictionaryPath"]*/);
+                GetEntry(path/*ConfigurationManager.AppSettings["DictionaryPath"]*/);
 
-                myDictionary = new Dictionary<string, string>();
-                myImplicitDictionary = new Dictionary<string, string>();
+                MyDictionary = new Dictionary<string, string>();
+                MyImplicitDictionary = new Dictionary<string, string>();
                 for (int i = 0; i < elementTag.Length; i++)
                 {
-                    if (!myDictionary.ContainsKey(elementTag[i]))
+                    if (!MyDictionary.ContainsKey(elementTag[i]))
                     {
-                        myDictionary.Add(elementTag[i], elementDescription[i]);
-                        myImplicitDictionary.Add(elementTag[i], elementVR[i]);
+                        MyDictionary.Add(elementTag[i], elementDescription[i]);
+                        MyImplicitDictionary.Add(elementTag[i], elementVR[i]);
                     }
 
                 }
@@ -136,33 +136,52 @@ namespace DicomXml
         /// </summary>
         /// <param name="key">Dicom element tag as union of DICOM group and element (read from the DICM file) into an unique string</param>
         /// <returns>Returns the result of the search.</returns>
-        public string dictLookup(string key)
+        public string DictLookup(string key)
         {
             string value = string.Empty;
-            int tag=0;
-            // this data element Tags must not to be converted, are delimiters except for 7FE00010 that is the pixel data element.
-            if (key != "7FE00000" && key != "7FE00010" && key != "FFFEE00D" && key != "FFFEE000" && key != "FFFCFFFC" /*"DataSetTrailingPadding"*/ && key != "FFFEE0DD"/*Image Sequence Delimiter*/)
-                tag = Convert.ToInt32(key.Substring(0, 4),16);
-            if (tag != 0 && tag % 2 != 0 && tag != 0)
-                value = "Private Element";
-            else if (myDictionary.ContainsKey(key))
-                myDictionary.TryGetValue(key, out value);
-            else
-                value = null;
+            try
+            {
+
+
+                int tag = 0;
+                // this data element Tags must not to be converted, are delimiters except for 7FE00010 that is the pixel data element.
+                if (key != "7FE00000" && key != "7FE00010" && key != "FFFEE00D" && key != "FFFEE000" && key != "FFFCFFFC" /*"DataSetTrailingPadding"*/ && key != "FFFEE0DD"/*Image Sequence Delimiter*/)
+                    tag = Convert.ToInt32(key.Substring(0, 4), 16);
+                if (tag != 0 && tag % 2 != 0 && tag != 0)
+                    value = "Private Element";
+                else if (MyDictionary.ContainsKey(key))
+                    MyDictionary.TryGetValue(key, out value);
+                else
+                    value = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             return value;
         }
-        public string dictLookup(string key, bool impl)
+        public string DictLookup(string key, bool impl)
         {
             string value = string.Empty;
-            int tag=0;
-            if (key != "7FE00000" && key != "7FE00010" && key != "FFFEE00D")
-                tag = Convert.ToInt32(key.Substring(0, 4));
-            if (tag != 0 && tag % 2 != 0 && tag != 0)
-                value = "Private Element";
-            else if (myImplicitDictionary.ContainsKey(key))
-                myImplicitDictionary.TryGetValue(key, out value);
-            else
-                value = null;
+            try
+            {
+
+                int tag = 0;
+                if (key != "7FE00000" && key != "7FE00010" && key != "FFFEE00D" && key != "FFFEE000" && key != "FFFEE0DD")
+                    tag = Convert.ToInt32(key.Substring(0, 4));
+                if (tag != 0 && tag % 2 != 0 && tag != 0)
+                    value = "Private Element";
+                else if (MyImplicitDictionary.ContainsKey(key))
+                    MyImplicitDictionary.TryGetValue(key, out value);
+                else
+                    value = null;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+
+            }
             return value;
         }
     }

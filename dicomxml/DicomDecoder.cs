@@ -14,20 +14,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 
-using System.Text;
-
 /// Using the FO-Dicom Library
-using Dicom.IO;
-using Dicom.IO.Reader;
-using Dicom.Imaging;
-using Dicom.Imaging.Algorithms;
-using Dicom.Imaging.Codec;
-using Dicom.Imaging.Codec.Jpeg;
-using Dicom.Imaging.LUT;
-using Dicom.Imaging.Mathematics;
-using Dicom.Imaging.Render;
-using Dicom.Media;
 using Dicom;
+
 //using CharLS;
 
 namespace DicomXml
@@ -53,22 +42,23 @@ namespace DicomXml
         //const string ITEM = "FFFEE000";
         //const string ITEM_DELIMITATION = "FFFEE00D";
         //const string SEQUENCE_DELIMITATION = "FFFEE0DD";
-        public static bool isOW { get; set; }
-        public static bool isImage;
-        public static bool inSequence { get; set; }
-        public static FileEncode encode;
-        public static ImageType imageType;
-        DicomReader read;
-        public DicomObject dicomObject;
+        public static bool IsOW { get; set; }
+        public static bool IsImage;
+        public static bool InSequence { get; set; }
+        public static FileEncode Encode;
+        public static ImageType ImageType;
+        readonly DicomReader read;
+        public DicomObject DicomObject;
         DicomDictionary dict;
         DicomDataElement elem;
         DicomImage img;
-        public List<Bitmap> bmp;
-        public static double _frameTime { get; set; }
-        public double frameTime;
-        public int frameWidth, frameHeight;
-        Image Fo_image;
-        string filepath;
+        public List<Bitmap> Bmp;
+        public static double _FrameTime { get; set; }
+        public double FrameTime;
+        public int FrameWidth, FrameHeight;
+        Image foImage;
+        readonly string filepath;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -78,61 +68,61 @@ namespace DicomXml
             filepath = path;
 
             read = new DicomReader(path);
-            dicomObject = new DicomObject();
-            encode = FileEncode.explicitLittle; // default value.
-            isOW = false;
-            _frameTime = 0;
+            DicomObject = new DicomObject();
+            Encode = FileEncode.ExplicitLittle; // default value.
+            IsOW = false;
+            _FrameTime = 0;
         }
 
         /// <summary>
         /// Decode the entire file.
         /// </summary>
-        public void processFile()
+        public void ProcessFile()
         {
-            if (read.isDicom())
+            if (read.IsDicom())
             {
                 dict = new DicomDictionary();
 
                 
-                while (DicomReader.startPosition < DicomReader.EOF)
+                while (DicomReader.StartPosition < DicomReader.EOF)
                 {
                     elem = new DicomDataElement();
-                    elem.elementTag = read.readTag();
-                    elem.tagDescription = dict.dictLookup(elem.elementTag);
+                    elem.ElementTag = read.ReadTag();
+                    elem.TagDescription = dict.DictLookup(elem.ElementTag);
                     /*
-                     * Verificare caso con immagini in sequenza. ovvero con element length = FFFFFFFF.
+                     * Verificare caso con immagini in sequenza. ovvero con element Length = FFFFFFFF.
                      * */
-                    if (elem.tagDescription != null)
+                    if (elem.TagDescription != null)
                     {
 
-                        switch (encode)
+                        switch (Encode)
                         {
-                            case FileEncode.implicitVR:
+                            case FileEncode.ImplicitVR:
                                 short count = 2;
-                                if (elem.elementTag.Substring(0, 4) == "0002")
-                                    elem.elementVR = DicomReader.getString(read.reader(2), false);
+                                if (elem.ElementTag.Substring(0, 4) == "0002")
+                                    elem.ElementVR = DicomReader.GetString(read.Reader(2), false);
                                 else
                                 {
-                                    elem.elementVR = dict.dictLookup(elem.elementTag, true);
+                                    elem.ElementVR = dict.DictLookup(elem.ElementTag, true);
                                     count = 4;
                                 }
-                                elem.length = read.getLength(count); //DicomReader.bytesToRead
+                                elem.Length = read.GetLength(count); //DicomReader.BytesToRead
 
                                 break;
                             //end case implicit
-                            case FileEncode.explicitLittle:
-                            case FileEncode.explicitBig:
+                            case FileEncode.ExplicitLittle:
+                            case FileEncode.ExplicitBig:
                             case FileEncode.jpeg:
-                                if (elem.tagDescription.Equals("Item") || elem.tagDescription.Equals("ItemDelimitationItem"))
-                                    elem.elementVR = "SEQ";
-                                else if (elem.tagDescription.Equals("SequenceDelimitationItem"))
-                                    elem.elementVR = "EOS" ; //End of Sequence.
+                                if (elem.TagDescription.Equals("Item") || elem.TagDescription.Equals("ItemDelimitationItem"))
+                                    elem.ElementVR = "SEQ";
+                                else if (elem.TagDescription.Equals("SequenceDelimitationItem"))
+                                    elem.ElementVR = "EOS" ; //End of Sequence.
                                 else
                                 {
-                                    DicomReader.isInt = false;
-                                    elem.elementVR = DicomReader.getString(read.reader(2), false);
+                                    DicomReader.IsInt = false;
+                                    elem.ElementVR = DicomReader.GetString(read.Reader(2), false);
                                 }
-                                switch (elem.elementVR)
+                                switch (elem.ElementVR)
                                 {
 
                                     case OB:
@@ -140,128 +130,128 @@ namespace DicomXml
                                     case OF:
                                     case UN:
                                     case UT:
-                                        DicomReader.startPosition += 2;
-                                        elem.length = read.getLength(4);
-                                        //DicomReader.bytesToRead = elem.length;
+                                        DicomReader.StartPosition += 2;
+                                        elem.Length = read.GetLength(4);
+                                        //DicomReader.BytesToRead = elem.Length;
                                         break;
                                     case UL:
-                                        DicomReader.isInt = true;
-                                        elem.length = read.getLength(2);
-                                        //DicomReader.bytesToRead = elem.length;
+                                        DicomReader.IsInt = true;
+                                        elem.Length = read.GetLength(2);
+                                        //DicomReader.BytesToRead = elem.Length;
                                         break;
                                     case SQ:
-                                        DicomReader.startPosition += 2;
-                                        elem.length = read.getLength(4);
-                                        DicomDecoder.inSequence = true;
+                                        DicomReader.StartPosition += 2;
+                                        elem.Length = read.GetLength(4);
+                                        DicomDecoder.InSequence = true;
                                         break;
                                     case "SEQ":
-                                        //DicomReader.startPosition += 4;
-                                        elem.length = read.getLength(4); //0;
-                                        DicomDecoder.inSequence = true;
+                                        //DicomReader.StartPosition += 4;
+                                        elem.Length = read.GetLength(4); //0;
+                                        DicomDecoder.InSequence = true;
                                         break;
                                     case "EOS":
-                                        elem.length = 0;
-                                        DicomReader.startPosition += 4;
-                                        DicomDecoder.inSequence=false;
+                                        elem.Length = 0;
+                                        DicomReader.StartPosition += 4;
+                                        DicomDecoder.InSequence=false;
                                         break;
                                     case SS:
                                     case US:
                                     case SL:
-                                        elem.length = read.getLength(2);
-                                        DicomReader.isInt = true;
+                                        elem.Length = read.GetLength(2);
+                                        DicomReader.IsInt = true;
                                         break;
                                     case FL:
-                                        elem.length = read.getLength(2);
-                                        DicomReader.isFloat = true;
+                                        elem.Length = read.GetLength(2);
+                                        DicomReader.IsFloat = true;
                                         break;
                                     case DA:
-                                        elem.length = read.getLength(2);
-                                        DicomReader.isDate = true;
+                                        elem.Length = read.GetLength(2);
+                                        DicomReader.IsDate = true;
                                         break;
                                     default:
-                                        elem.length = read.getLength(2);
-                                        //DicomReader.bytesToRead = elem.length;
+                                        elem.Length = read.GetLength(2);
+                                        //DicomReader.BytesToRead = elem.Length;
                                         break;
                                 }
-                                if (elem.length == 0xFFFFFFFF || elem.length == -1 || elem.elementVR == SQ) //DicomReader.bytesToRead
+                                if (elem.Length == 0xFFFFFFFF || elem.Length == -1 || elem.ElementVR == SQ) //DicomReader.BytesToRead
                                 {
-                                    elem.length = 0; //DicomReader.bytesToRead              
-                                    DicomReader.isLittleEndian = false;
-                                    DicomDecoder.inSequence = true;
+                                    elem.Length = 0; //DicomReader.BytesToRead              
+                                    DicomReader.IsLittleEndian = false;
+                                    DicomDecoder.InSequence = true;
                                 }
                                 else
                                 {
-                                    DicomReader.isLittleEndian = true;
-                                    //DicomDecoder.inSequence = false;
+                                    DicomReader.IsLittleEndian = true;
+                                    //DicomDecoder.InSequence = false;
                                 }
                                 break;
                             default:
                                 break;
                         }
 
-                        elem.setValue(read.reader(elem.length));
-                        if (isImage)// && elem.elementTag == "7FE00010")
+                        elem.SetValue(read.Reader(elem.Length));
+                        if (IsImage)// && elem.ElementTag == "7FE00010")
                         {
-                            elem.elementValue = "0"; // it can be the image path!!!
+                            elem.ElementValue = "0"; // it can be the image path!!!
                             int i = 0;
                             img = new DicomImage();
-                            bmp = new List<Bitmap>();
+                            Bmp = new List<Bitmap>();
                             int bitAll;
                             int columns;
                             int rows;
-                            int UncompressedFrameSize = img.setValues(imageType, out bitAll, out columns, out rows);
+                            int uncompressedFrameSize = img.SetValues(ImageType, out bitAll, out columns, out rows);
                             string imgPath = ConfigurationManager.AppSettings["ImageOutPath"];
 
-                            if (encode == FileEncode.jpeg)
+                            if (Encode == FileEncode.jpeg)
                             {
                                 
                                 //DicomJPEG pro = new DicomJPEG();
-                                //read.readPixels(UncompressedFrameSize,bitAll,columns,rows);
-                                read.closeReader();
+                                //read.ReadPixels(UncompressedFrameSize,bitAll,columns,rows);
+                                read.CloseReader();
                                 
                                 var file = DicomFile.Open(filepath);
                                 Dicom.Imaging.DicomImage ima = new Dicom.Imaging.DicomImage(file.Dataset, 0);
-                                Fo_image = ima.RenderImage();
-                                elem.frameValue.Add(img.toBase64String((Bitmap)Fo_image));
-                                bmp.Add(new Bitmap(columns, rows));
-                                bmp[0] = (Bitmap)Fo_image;
+                                foImage = ima.RenderImage();
+                                elem.FrameValue.Add(img.ToBase64String((Bitmap)foImage));
+                                Bmp.Add(new Bitmap(columns, rows));
+                                Bmp[0] = (Bitmap)foImage;
 
-                                DicomReader.startPosition = DicomReader.EOF + 1;
-                               //bmp.Add(new Bitmap(columns, rows));
-                               //bmp[i] =   read.readJPEG();
+                                DicomReader.StartPosition = DicomReader.EOF + 1;
+                               //Bmp.Add(new Bitmap(columns, rows));
+                               //Bmp[i] =   read.readJPEG();
                                 
-                               // elem.frameValue.Add(img.toBase64String(bmp[i]));
+                               // elem.FrameValue.Add(img.ToBase64String(Bmp[i]));
                             }
                             else
                             {
-                                while (i <= DicomObject.numOfFrames - 1)
+                                while (i <= DicomObject.NumOfFrames - 1)
                                 {
-                                    read.readPixels(UncompressedFrameSize, bitAll, columns, rows);
+                                    read.ReadPixels(uncompressedFrameSize, bitAll, columns, rows);
 
-                                    Image myImage = new Bitmap(columns, rows);
+                                    //Image myImage = new Bitmap(columns, rows);
 
                                     //myImage.Source = img.decodeImage();
                                     //myImage.Stretch = Stretch.None;
                                     //myImage.Margin = new Thickness(20);
 
 
-                                    bmp.Add(new Bitmap(columns, rows));
-                                    bmp[i] = img.createImage();
+                                    Bmp.Add(new Bitmap(columns, rows));
+                                    Bmp[i] = img.CreateImage();
                                     img.SaveImage(imgPath + "newImage" + i + ".jpg"); // would be the value of the pixel tag!
 
-                                    elem.frameValue.Add(img.toBase64String(bmp[i])); //the image file is coded into base64String.
+                                    elem.FrameValue.Add(img.ToBase64String(Bmp[i])); //the image file is coded into base64String.
                                     i++;
                                 }
                             }
 
-                            isImage = false;
-                            imageFound = false;
-                            overlayFound = false;
-                            frameTime = _frameTime > 0 ? _frameTime : 0;
+                            IsImage = false;
+                            ImageFound = false;
+                            OverlayFound = false;
+                            FrameTime = _FrameTime > 0 ? _FrameTime : 0;
                         }
-                        dicomObject.myDicomObject.Add(this.elem);
-                        frameHeight = DicomObject.pixelRows;
-                        frameWidth = DicomObject.pixelColumns;
+                        DicomObject.MyDicomObject.Add(this.elem);
+                        FrameHeight = DicomObject.PixelRows;
+                        FrameWidth = DicomObject.PixelColumns;
                         
                     }
                 }
@@ -269,26 +259,26 @@ namespace DicomXml
             }
         }
 
-        public void dispose()
+        public void Dispose()
         {
-            this.elem.dispose();
-            this.read.closeReader();
-            this.dicomObject.dispose();
-            if (DicomReader.pixels8 != null)
-                DicomReader.pixels8 = null;
-            if (DicomReader.pixels16 != null || DicomReader.pixels16Int != null)
+            this.elem.Dispose();
+            this.read.CloseReader();
+            this.DicomObject.Dispose();
+            if (DicomReader.Pixels8 != null)
+                DicomReader.Pixels8 = null;
+            if (DicomReader.Pixels16 != null || DicomReader.Pixels16Int != null)
             {
-                DicomReader.pixels16 = null;
-                DicomReader.pixels16Int = null;
+                DicomReader.Pixels16 = null;
+                DicomReader.Pixels16Int = null;
             }
-            if (DicomReader.pixels24 != null)
-                DicomReader.pixels24 = null;
+            if (DicomReader.Pixels24 != null)
+                DicomReader.Pixels24 = null;
 
         }
 
-        public static bool imageFound { get; set; }
+        public static bool ImageFound { get; set; }
 
-        public static bool overlayFound { get; set; }
+        public static bool OverlayFound { get; set; }
     }
 }
                         

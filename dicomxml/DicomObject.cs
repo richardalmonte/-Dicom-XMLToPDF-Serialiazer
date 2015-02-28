@@ -11,88 +11,64 @@
  */
 using System;
 using System.Collections.Generic;
-//using System.Linq;
-using System.Text;
 
+//using System.Linq;
 namespace DicomXml
 {
-    /// <summary>
-    /// Using the TransferSyntaxUID tag (0002,0010) to identify the file encoding mode.
-    /// </summary>
-    public enum FileEncode
+    partial class DicomObject
     {
-        /// <summary>
-        /// if using TransferSyntaxUID = 1.2.840.10008.1.2
-        /// </summary>
-        implicitVR,
-        /// <summary>
-        /// if using TransferSyntaxUID = 1.2.840.10008.1.2.1 
-        /// </summary>
-        explicitLittle,
-        /// <summary>
-        /// if using TransferSyntaxUID = 1.2.840.10008.1.2.2
-        /// </summary>
-        explicitBig,
-        /// <summary>
-        /// if using TransferSyntaxUID = 1.2.840.10008.1.2.4.91
-        /// </summary>
-        jpeg
-    }
-
-   partial class  DicomObject
-    {
-        public static int bitsAllocated;
-        public static int pixelColumns;
-        public static int pixelRows;
+        public static int BitsAllocated;
+        public static int PixelColumns;
+        public static int PixelRows;
         //public static int offset;
-        public static int pixelSample;
-        public static int bitStored;
-        public static short highBit;
-        public static short pixelRepresentation;
-        public static double rescaleIntercept = 0;
-        public static double rescaleSlope = 1;
-        public static int imgNumber;
+        public static int PixelSample;
+        public static int BitStored;
+        public static short HighBit;
+        public static short PixelRepresentation;
+        public static double RescaleIntercept = 0;
+        public static double RescaleSlope = 1;
+        public static int ImgNumber;
        //Palette Color Lookup Table Descriptor
         public static int[] RedPaletteLookupTable { get; set; }
         public static int[] GreenPaletteLookupTable { get; set; }
         public static int[] BluePaletteLookupTable { get; set; }
 
-        private static int _numOfFrames = 0;
+        private static int numOfFrames = 0;
 
-        public static int numOfFrames { get { return _numOfFrames; } set { _numOfFrames = value; } }
+        public static int NumOfFrames { get { return numOfFrames; } set { numOfFrames = value; } }
        
-        public static string transferSyntax;
+        public static string TransferSyntax;
 
-        public static double pixelDepth = 1.0;
-        public static double pixelWidth = 1.0;
-        public static double pixelHeight = 1.0;
+        public static double PixelDepth = 1.0;
+        public static double PixelWidth = 1.0;
+        public static double PixelHeight = 1.0;
 
         //public static string unit;
      
-        public static string photoInterpretation;
+        public static string PhotoInterpretation;
 
-        public static double windowCentre, windowWidth;
-        public static bool signedImage;
-        //public static FileEncode encode;
+        public static double WindowCentre, WindowWidth;
+        public static bool SignedImage;
+        //public static FileEncode Encode;
         //public List<string> dicomInfo;
         
 
-        public List<DicomDataElement> myDicomObject { get; set; }
+        public List<DicomDataElement> MyDicomObject { get; set; }
 
         public DicomObject()
         {
-            if (myDicomObject != null)
-                myDicomObject.Clear();
+            if (MyDicomObject != null)
+                MyDicomObject.Clear();
             
-            myDicomObject = new List<DicomDataElement>();
+            MyDicomObject = new List<DicomDataElement>();
 
-            defaultValue();
+            DefaultValue();
         }
 
-        private void defaultValue()
+        private void DefaultValue()
         {
-            if (numOfFrames != 0)
-                numOfFrames = 0;
+            if (NumOfFrames != 0)
+                NumOfFrames = 0;
             if (RedPaletteLookupTable != null)
             {
                 RedPaletteLookupTable = null;
@@ -101,9 +77,9 @@ namespace DicomXml
             }
         }
 
-        public void dispose()
+        public void Dispose()
         {
-            this.myDicomObject.Clear();
+            this.MyDicomObject.Clear();
         }
 
 

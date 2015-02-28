@@ -16,7 +16,7 @@ namespace DicomXml
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new mainFrm());
+            Application.Run(new MainFrm());
         }
     }
 }
