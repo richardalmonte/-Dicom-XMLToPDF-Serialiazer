@@ -16,6 +16,7 @@ using System.Drawing;
 
 /// Using the FO-Dicom Library
 using Dicom;
+using System.IO;
 
 //using CharLS;
 
@@ -210,6 +211,7 @@ namespace DicomXml
                                 read.CloseReader();
                                 
                                 var file = DicomFile.Open(filepath);
+                               
                                 Dicom.Imaging.DicomImage ima = new Dicom.Imaging.DicomImage(file.Dataset, 0);
                                 foImage = ima.RenderImage();
                                 elem.FrameValue.Add(img.ToBase64String((Bitmap)foImage));
@@ -224,6 +226,9 @@ namespace DicomXml
                             }
                             else
                             {
+                                Stream file = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                                Dicom.Imaging.DicomImage im = new Dicom.Imaging.DicomImage(DicomFile.Open(file).Dataset, 0);
+
                                 while (i <= DicomObject.NumOfFrames - 1)
                                 {
                                     read.ReadPixels(uncompressedFrameSize, bitAll, columns, rows);
@@ -234,10 +239,12 @@ namespace DicomXml
                                     //myImage.Stretch = Stretch.None;
                                     //myImage.Margin = new Thickness(20);
 
+                                    Bitmap image = new Bitmap(im.RenderImage(i));
+                                        
 
-                                    Bmp.Add(new Bitmap(columns, rows));
-                                    Bmp[i] = img.CreateImage();
-                                    img.SaveImage(imgPath + "newImage" + i + ".jpg"); // would be the value of the pixel tag!
+                                    Bmp.Add(image);
+                                    Bmp[i] = image;
+                                    image.Save(imgPath + "newImage" + i + ".jpg"); // would be the value of the pixel tag!
 
                                     elem.FrameValue.Add(img.ToBase64String(Bmp[i])); //the image file is coded into base64String.
                                     i++;

@@ -15,6 +15,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Configuration;
+using System.IO;
 
 namespace DicomXml
 {

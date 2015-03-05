@@ -16,6 +16,7 @@ using System.Text;
 using System.Linq;
 using System.IO;
 using System.Windows.Forms;
+using System.Security.AccessControl;
 
 namespace DicomXml
 {
@@ -55,7 +56,8 @@ namespace DicomXml
             FilePath = path;
             try
             {
-                myFileStreamer = new FileStream(path, FileMode.Open);
+                
+                myFileStreamer = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
                 EOF = myFileStreamer.Length;
             }
