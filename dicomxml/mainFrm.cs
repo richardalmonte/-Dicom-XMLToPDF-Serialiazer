@@ -96,18 +96,18 @@ namespace DicomXml
             this.timer1.Enabled = true;
             i = 0;
         }
-       
-       private void ShowImage(Bitmap image)
+
+        private void ShowImage(Bitmap image)
         {
             pictureBox1.Image = image;
         }
 
-       private void Timer1_Tick(object sender, EventArgs e)
-       {
-           ShowImage(images[i]);
-           ++i;
-           if (i >= images.Count)
-               i = 0;
-       }
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            ShowImage(images[i]);
+            ++i;
+            if (i >= images.Count)
+                i = 0;
+        }
     }
 }
